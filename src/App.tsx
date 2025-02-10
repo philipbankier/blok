@@ -7,6 +7,7 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { FavoritesModal } from './components/FavoritesModal';
 import { FeedbackModal } from './components/FeedbackModal';
 import { trackViewedPost, migrateViewedPosts, getUnviewedPosts, setupTabSync } from './lib/postTracking';
+import { Session } from '@supabase/supabase-js';
 
 interface BlogPost {
   id: string;
@@ -21,7 +22,7 @@ interface BlogPost {
 }
 
 function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [favoritePosts, setFavoritePosts] = useState<BlogPost[]>([]);
@@ -233,7 +234,7 @@ function App() {
             >
               <MessageSquare className="w-4 h-4 text-gray-300 hover:text-blue-400 transition-colors" />
             </button>
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             {!session ? (
               <div className="flex items-center gap-3">
                 <button
