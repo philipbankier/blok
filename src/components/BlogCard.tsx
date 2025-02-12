@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, User } from 'lucide-react';
+import { Heart, User, Share2 } from 'lucide-react';
 
 interface BlogPost {
   id: string;
@@ -22,6 +22,23 @@ interface Props {
 }
 
 export function BlogCard({ post, isFavorited, onFavoriteToggle, isAuthenticated }: Props) {
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: post.title,
+          text: post.summary,
+          url: post.url
+        });
+      } else {
+        await navigator.clipboard.writeText(post.url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto px-4">
       <div className="glass-card rounded-3xl shadow-2xl overflow-hidden">
@@ -67,21 +84,30 @@ export function BlogCard({ post, isFavorited, onFavoriteToggle, isAuthenticated 
               >
                 Read More
               </a>
-              {isAuthenticated && (
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={onFavoriteToggle}
-                  className="p-3 rounded-full hover:bg-white/10 transition-colors group/heart"
-                  aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                  onClick={handleShare}
+                  className="p-3 rounded-full hover:bg-white/10 transition-colors group/share"
+                  aria-label="Share article"
                 >
-                  <Heart
-                    className={`w-7 h-7 transition-all duration-300 ${
-                      isFavorited 
-                        ? 'fill-red-500 text-red-500 animate-pulse-glow' 
-                        : 'text-white/70 group-hover/heart:text-red-500'
-                    }`}
-                  />
+                  <Share2 className="w-7 h-7 text-white/70 group-hover/share:text-blue-400 transition-colors" />
                 </button>
-              )}
+                {isAuthenticated && (
+                  <button
+                    onClick={onFavoriteToggle}
+                    className="p-3 rounded-full hover:bg-white/10 transition-colors group/heart"
+                    aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                  >
+                    <Heart
+                      className={`w-7 h-7 transition-all duration-300 ${
+                        isFavorited 
+                          ? 'fill-red-500 text-red-500 animate-pulse-glow' 
+                          : 'text-white/70 group-hover/heart:text-red-500'
+                      }`}
+                    />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
